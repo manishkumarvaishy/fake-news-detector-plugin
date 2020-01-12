@@ -137,6 +137,9 @@
         .false {
             color: red;
         }
+        #detail{
+            margin-top: -30px;
+        }
     </style>
     <script src="jquery.min.js"></script>
     <script src="popup.js"></script>
@@ -157,18 +160,21 @@
 
             <div id="checkPage" class="hide">
                 <div class="flex">
-                    &nbsp;&nbsp;
-                    <img id="detect" title="Detect" class="logo-icon" src="detectbutton.jpeg" />
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;
-                    <img id="agree" title="Agree" class="logo-icon hide fade" src="greenflag.png" />
+                          &nbsp;&nbsp;
+                          <img id="detect" title="Detect" class="logo-icon" src="detectbutton.jpeg" />
+                         
+                          
 
-                    <img id="disagree" title="Disagree" class="logo-icon hide fade" src="redflag.png" />
-                    <input type="hidden" id="docId">
+                         
+                         
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                          <img id="agree" title="Agree" class="logo-icon hide fade" src="greenflag.png" />
+                          <h1 id="greenflagvotes"  class="logo-icon" style="font-size:12px; display: inline; color:black;" /> </h1>
+
+                          <img id="disagree" title="Disagree" class="logo-icon hide fade" src="redflag.png" />
+                           <h1 id="redflagvotes"  class="logo-icon" style="font-size:12px; display: inline; color:black;" /> </h1>
+                          <input type="hidden" id="docId">
                 </div>
             </div>
 
@@ -178,15 +184,13 @@
     </div>
 
     <div id="det" class="modal-detail hide">
-        <b>Result:</b>
-        <br>
-
-        <div id="result">
+        <h3>Result:</h3>
+      <div id="result">
 
         </div>
 
         <br>
-        <b>Details:</b>
+        <h3>Details:</h3>
 
         <div id="detail">
 

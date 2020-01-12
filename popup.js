@@ -59,6 +59,8 @@ function saveAction(messageText, action) {
             url: messageText,
             action: action,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function () {
+            showflagdata(messageText);
         }).catch(function (error) {
             console.error('Error writing new message to database', error);
         });
@@ -70,13 +72,15 @@ function saveAction(messageText, action) {
             url: messageText,
             action: action,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        }).then(function(){
+        }).then(function () {
+            showflagdata(messageText);
             loadMessages(getEmailId(), messageText);
         }).catch(function (error) {
             console.error('Error writing new message to database', error);
         });
 
-        
+
+
     }
 
 
@@ -86,6 +90,7 @@ function saveAction(messageText, action) {
 
 // Loads chat messages history and listens for upcoming ones.
 function loadMessages(email, url) {
+    showflagdata(url);
     // Create the query to load the last 12 messages and listen for new ones.
     var query = firebase.firestore()
         .collection('messages')
@@ -107,14 +112,49 @@ function loadMessages(email, url) {
                 }
                 alert(doc.data("action"));
             });
+            showflagdata(url);
         })
         .catch(function (error) {
             console.log("Error getting documents: ", error);
         });
-
-
-
 }
+
+//query and filter database to show ratio between red and green flags
+function showflagdata(url) {
+    // Create the query to load the last 12 messages and listen for new ones.
+    var greenflag = 0;
+    var redflag = 0;
+    var query = firebase.firestore()
+        .collection('messages')
+        .where("url", "==", url)
+        .get()
+        .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+
+                if (doc.data().action == "agree") {
+                    greenflag++;
+                }
+                else if (doc.data().action == "disagree") {
+                    redflag++;
+                }
+
+            });
+
+            var sum;
+            sum = greenflag + redflag;
+            if (sum != 0) {
+                greenflag = greenflag * 100 / sum;
+                redflag = redflag * 100 / sum;
+            }
+            document.getElementById("greenflagvotes").innerHTML = greenflag.toFixed(0) + "% :";
+            document.getElementById("redflagvotes").innerHTML = redflag.toFixed(0) + "%";
+
+        })
+        .catch(function (error) {
+            console.log("Error getting documents: ", error);
+        });
+}
+
 
 
 function extractInfo(htmlDoc) {
@@ -140,19 +180,17 @@ function extractInfo(htmlDoc) {
     firstText = firstText.replace(/\n\s*\n\s*\n/g, '\n\n');
 
 
-    var resultDiv = document.getElementById('result');
+    //var resultDiv = document.getElementById('result');
     var detailDiv = document.getElementById('detail');
-    resultDiv.innerText = result;
+    //resultDiv.innerText = result;
     //detailDiv.innerText=firstText.replace(/(\n)/gm," ");
     detailDiv.innerText = firstText.split('\n\n', 5).join('\n\n');
 
     $('#det').removeClass('hide');
-    if(result.indexOf("True")>-1)
-    {
+    if (result.indexOf("True") > -1) {
         $('#det b').addClass('true');
     }
-    else
-    {
+    else {
         $('#det b').addClass('false');
     }
 
@@ -186,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         chrome.tabs.getSelected(null, function (tab) {
             //d = document;
+            var text = "";
             var link = tab.url;
             fetch('https://www.unslanted.net/newsbot/?u=' + link + '/&submit=Analyze').then(r => r.text()).then(result => {
                 // Result now contains the response text, do what you want...
@@ -196,27 +235,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 loadMessages(getEmailId(), link)
 
+            });
+
+            fetch('https://api.diffbot.com/v3/article?token=2862f8d6a3a0fe126f0a66118eb01604&url=' + link).then(r => r.text()).then(result => {
+                // Result now contains the response text, do what you want...
+
+                var jsonResponse = JSON.parse(result);
+                text = (jsonResponse['objects'][0]['text']);
+                text = text.replace(/"/g, '\\"');//.replaceAll("'", "\'");
+                console.log(text);
+                $.post({
+
+
+                    url: "https://automl.googleapis.com/v1beta1/projects/fakenewsdetector/locations/us-central1/models/TBL8780484355140091904:predict",
+                    headers: {
+                        "Authorization": "Bearer ya29.c.Kl65Bx-7qa0vZcnZtAWze0tqI4PpWueFXyQnJeSlslUXkyOtaT7upT-BpFiRUEiLdjC_FY72mptGTDGOtJEXymyAx4CKDu3GOAU82y4sHQ99EjjEYoRBEKX5MFHz07da",
+                        "Content-Type": "application/json"
+                    },
+                    //data: JSON.parse("{\"payload\": {\"row\": {\"values\": [\"This is a sentence. This is real.\"]}}}")
+                    data: '{"payload": {"row": {"values": ["' + text + '"]}}}',
+                }).then(function (res) {
+                    console.log(res);
+                    debugger;
+                    var autoML = res["payload"][0]["tables"]["score"];
+                    console.log(autoML);
+
+
+                    var resultDiv = document.getElementById('result');
+                    resultDiv.innerText = result;
+
+                    if (autoML > 0.5)
+                        resultDiv.innerHTML = "<b>Probably Legitimate!</b>";
+                    else
+                        resultDiv.innerHTML = "<b>Probably Fake!</b>";
+
+
+                    console.log(res);
+                }, function (err) {
+                    console.log(err);
+                });
+
             })
-
-
 
         });
 
-        $.post({
 
-
-            url: "https://automl.googleapis.com/v1beta1/projects/fakenewsdetector/locations/us-central1/models/TBL8780484355140091904:predict",
-            headers: {
-              "Authorization": "Bearer ya29.c.Kl65Bx16NdX5glon-K5eG93_kvY7DInJ3jsuCf8dF5kA6vqT4Ydh-UihnTXdYk3S4ZheGB8rDe3N_6Gz1Ozg4-itctVIqt7jhvmnuiXV2q_wOXM3iUuTRGdXd9r5TLTY",
-              "Content-Type": "application/json"
-            },
-            //data: JSON.parse("{\"payload\": {\"row\": {\"values\": [\"This is a sentence. This is real.\"]}}}")
-            data: '{"payload": {"row": {"values": ["This is a sentence. This is real."]}}}',
-          }).then(function(res){
-            alert(res);
-          }, function(err){
-            alert(err);
-          });
 
 
     }, false);
@@ -228,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function () {
             var link = tab.url;
             saveAction(link, "agree");
             $('#agree').removeClass('fade');
-                $('#disagree').addClass('fade');
+            $('#disagree').addClass('fade');
         });
     }, false);
 
