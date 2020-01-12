@@ -23,7 +23,7 @@
 
         html,
         body {
-            font-family: "Open Sans", sans-serif;
+            font-family: 'Helvetica'
             font-size: 14px;
             margin: 0;
             min-height: 180px;
@@ -32,7 +32,7 @@
         }
 
         h1 {
-            font-family: "Menlo", monospace;
+            font-family: 'Helvetica'
             font-size: 22px;
             font-weight: 400;
             margin: 0;
@@ -68,9 +68,10 @@
         }
 
         .modal-detail {
+            padding-bottom: 10px;
             border-top: 0.5px solid #dadada;
             min-height: 0px;
-            max-height: 160px;
+            max-height: 200px;
             padding-left: 10px;
             width: 100%;
             overflow: auto;
@@ -78,7 +79,10 @@
         }
 
         .logo {
+            border: 1px solid black;
             padding: 16px;
+            color: crimson;
+            font-family: 'Helvetica'
         }
 
         .logo-icon {
@@ -95,7 +99,7 @@
         .flex-container {
             display: flex;
             justify-content: space-between;
-            padding: 10px 22px;
+            padding: 10px;
         }
 
         .hide {
@@ -105,10 +109,14 @@
         .flex {
             opacity: 1;
             transition: opacity 0.2s ease-in-out;
-            width: 120px;
+           
         }
 
-        .flex:hover {
+        img:hover {
+            opacity: 1;
+        }
+
+        .fade{
             opacity: 0.4;
         }
 
@@ -124,7 +132,7 @@
 <body>
     <div class="modal-header">
         <h1 class="logo">
-            <img class="logo-icon" src="icon.jpg" />Fake News Detector
+            <img class="logo-icon" src="glasses.png" />Fake News Detector
             <br><span class="version">by team New Bees [v (1.0.0)]</span>
         </h1>
     </div>
@@ -133,22 +141,37 @@
     </div>
     <div class="modal-icons">
         <div class="flex-container">
-            <div class="flex">
+            
                 <div id="checkPage" class="hide">
-                    <img id="detect" class="logo-icon" src="icon.jpg" />
-                    <img id="agree" title="Agree" class="logo-icon" src="icon.jpg" />
-                    <img id="disagree" title="Disagree" class="logo-icon" src="icon.jpg" />
+                    <div class="flex">
+                    &nbsp;&nbsp;
+                    <img id="detect" title="Detect"  class="logo-icon" src="detectbutton.jpeg" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;&nbsp;
+                    <img id="agree" title="Agree" class="logo-icon hide fade" src="greenflag.png" />
+                    
+                    <img id="disagree" title="Disagree" class="logo-icon hide fade" src="redflag.png" />
+                    <input type="hidden" id="docId">
+                    </div>
                 </div>
-            </div>
+
         </div>
-        <input id="signin" type="button" value="google sign in" />
+        <input id="signin" type="image" src="googlebutton.jpg" height="30" style="padding-left: 15px; padding-bottom: 15px;" />
     </div>
+        
     <div id="det" class="modal-detail hide">
         <b>Result:</b>
+        <br>
+        
         <div id="result">
 
         </div>
 
+        <br>
         <b>Details:</b>
 
         <div id="detail">

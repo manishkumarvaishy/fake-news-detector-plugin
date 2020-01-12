@@ -32,7 +32,7 @@ function authStateObserver(user) {
         $('#signin').hide();
         $('#checkPage').removeClass('hide');
 
-        $('#msg').text("Please click below button to detect fake news!");
+        $('#msg').text("Please click the green button below to detect fake news!");
 
 
 
@@ -50,18 +50,34 @@ function initFirebaseAuth() {
     firebase.auth().onAuthStateChanged(authStateObserver);
 }
 
-function saveMessage(messageText, action) {
+function saveAction(messageText, action) {
     // Add a new message entry to the database.
-    return firebase.firestore().collection('messages').add({
-        name: getUserName(),
-        email: getEmailId(),
-        url: messageText,
-        action: action,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    }).catch(function (error) {
-        console.error('Error writing new message to database', error);
-    });
+    if ($('#docId').value()) {
+        return firebase.firestore().collection('messages').doc(docId).update({
+            name: getUserName(),
+            email: getEmailId(),
+            url: messageText,
+            action: action,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function (error) {
+            console.error('Error writing new message to database', error);
+        });
+    }
+    else {
+        return firebase.firestore().collection('messages').add({
+            name: getUserName(),
+            email: getEmailId(),
+            url: messageText,
+            action: action,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).catch(function (error) {
+            console.error('Error writing new message to database', error);
+        });
+    }
+
+
 }
+
 
 
 // Loads chat messages history and listens for upcoming ones.
@@ -74,7 +90,18 @@ function loadMessages(email, url) {
         .then(function (querySnapshot) {
             querySnapshot.forEach(function (doc) {
                 // doc.data() is never undefined for query doc snapshots
-                console.log(doc.id, " => ", doc.data());
+                //console.log(doc.id, " => ", doc.data());
+                if (doc.data()) {
+                    $('#docId').value = doc.id;
+                    if (doc.data().action == "agree")
+                        $('#agree').removeClass('fade');
+                    else if (doc.data().action == "disagree")
+                        $('#disagree').removeClass('fade');
+                }
+                else {
+                    $('#docId').value = null;
+                }
+                alert(doc.data("action"));
             });
         })
         .catch(function (error) {
@@ -82,7 +109,7 @@ function loadMessages(email, url) {
         });
 
 
-    
+
 }
 
 
@@ -148,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (isUserSignedIn()) {
         user = firebase.auth().currentUser.displayName;
-        alert("Hello " + user);
+        alert(user + ", welcome! Now you can proceed!");
     }
 
     checkPageButton.addEventListener('click', function () {
@@ -159,6 +186,9 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch('https://www.unslanted.net/newsbot/?u=' + link + '/&submit=Analyze').then(r => r.text()).then(result => {
                 // Result now contains the response text, do what you want...
                 extractInfo(result);
+
+                $('#agree').removeClass('hide');
+                $('#disagree').removeClass('hide');
 
                 loadMessages(getEmailId(), link)
 
@@ -171,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.tabs.getSelected(null, function (tab) {
             //d = document;
             var link = tab.url;
-            saveMessage(link, "agree");
+            saveAction(link, "agree");
 
         });
     }, false);
@@ -181,7 +211,8 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.tabs.getSelected(null, function (tab) {
             //d = document;
             var link = tab.url;
-            saveMessage(link, "disagree");
+
+            saveAction(link, "disagree");
 
         });
     }, false);
