@@ -34,6 +34,8 @@ function authStateObserver(user) {
 
         $('#msg').text("Please click below button to detect fake news!");
 
+
+
         // We save the Firebase Messaging Device token and enable notifications.
         //saveMessagingDeviceToken();
     } else { // User is signed out!
@@ -48,6 +50,40 @@ function initFirebaseAuth() {
     firebase.auth().onAuthStateChanged(authStateObserver);
 }
 
+function saveMessage(messageText, action) {
+    // Add a new message entry to the database.
+    return firebase.firestore().collection('messages').add({
+        name: getUserName(),
+        email: getEmailId(),
+        url: messageText,
+        action: action,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(function (error) {
+        console.error('Error writing new message to database', error);
+    });
+}
+
+
+// Loads chat messages history and listens for upcoming ones.
+function loadMessages(email, url) {
+    // Create the query to load the last 12 messages and listen for new ones.
+    var query = firebase.firestore()
+        .collection('messages')
+        .where("email", "==", email).where("url", "==", url)
+        .get()
+        .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+                // doc.data() is never undefined for query doc snapshots
+                console.log(doc.id, " => ", doc.data());
+            });
+        })
+        .catch(function (error) {
+            console.log("Error getting documents: ", error);
+        });
+
+
+    
+}
 
 
 function extractInfo(htmlDoc) {
@@ -89,13 +125,24 @@ function extractInfo(htmlDoc) {
     //alert(x);
     $('#det').removeClass('hide');
 
+
+
+}
+
+// Returns the signed-in user's display name.
+function getUserName() {
+    return firebase.auth().currentUser.displayName;
+}
+function getEmailId() {
+    return firebase.auth().currentUser.email;
 }
 
 
 
-
 document.addEventListener('DOMContentLoaded', function () {
-    var checkPageButton = document.getElementById('checkPage');
+    var checkPageButton = document.getElementById('detect');
+    var agreeButton = document.getElementById('agree');
+    var disagreeButton = document.getElementById('disagree');
 
     initFirebaseAuth();
 
@@ -109,14 +156,36 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.tabs.getSelected(null, function (tab) {
             //d = document;
             var link = tab.url;
-
             fetch('https://www.unslanted.net/newsbot/?u=' + link + '/&submit=Analyze').then(r => r.text()).then(result => {
                 // Result now contains the response text, do what you want...
                 extractInfo(result);
+
+                loadMessages(getEmailId(), link)
+
             })
+        });
+    }, false);
+
+    agreeButton.addEventListener('click', function () {
+
+        chrome.tabs.getSelected(null, function (tab) {
+            //d = document;
+            var link = tab.url;
+            saveMessage(link, "agree");
 
         });
     }, false);
+
+    disagreeButton.addEventListener('click', function () {
+
+        chrome.tabs.getSelected(null, function (tab) {
+            //d = document;
+            var link = tab.url;
+            saveMessage(link, "disagree");
+
+        });
+    }, false);
+
 }, false);
 
 document.addEventListener('DOMContentLoaded', function () {

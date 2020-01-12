@@ -88,7 +88,8 @@
 
         .version {
             color: #444;
-            font-size: 18px;
+            font-size: 14px;
+            padding-left: 43px;
         }
 
         .flex-container {
@@ -124,7 +125,7 @@
     <div class="modal-header">
         <h1 class="logo">
             <img class="logo-icon" src="icon.jpg" />Fake News Detector
-            <span class="version">(1.0.0) by team New Bees</span>
+            <br><span class="version">by team New Bees [v (1.0.0)]</span>
         </h1>
     </div>
     <div class="modal-content">
@@ -133,8 +134,11 @@
     <div class="modal-icons">
         <div class="flex-container">
             <div class="flex">
-                <img id="checkPage" class="logo-icon hide" src="icon.jpg" />
-
+                <div id="checkPage" class="hide">
+                    <img id="detect" class="logo-icon" src="icon.jpg" />
+                    <img id="agree" title="Agree" class="logo-icon" src="icon.jpg" />
+                    <img id="disagree" title="Disagree" class="logo-icon" src="icon.jpg" />
+                </div>
             </div>
         </div>
         <input id="signin" type="button" value="google sign in" />
