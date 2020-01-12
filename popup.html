@@ -1,8 +1,20 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
     <title>Quick Fake News Detector</title>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-analytics.js"></script>
+
+    <script defer src="https://www.gstatic.com/firebasejs/7.6.2/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/7.6.2/firebase-firestore.js"></script>
+
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
         integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" />
@@ -84,8 +96,9 @@
             justify-content: space-between;
             padding: 10px 22px;
         }
-        .hide{
-            display:none;
+
+        .hide {
+            display: none;
         }
 
         .flex {
@@ -102,8 +115,6 @@
             font-size: 40px;
             color: #2f5876;
         }
-
-        
     </style>
     <script src="jquery.min.js"></script>
     <script src="popup.js"></script>
@@ -117,25 +128,25 @@
         </h1>
     </div>
     <div class="modal-content">
-        <p>click "DETECT" to see if this news is fake</p>
+        <p id="msg"></p>
     </div>
     <div class="modal-icons">
         <div class="flex-container">
             <div class="flex">
-                <img id="checkPage" class="logo-icon" src="icon.jpg" />
+                <img id="checkPage" class="logo-icon hide" src="icon.jpg" />
 
             </div>
         </div>
-        
+        <input id="signin" type="button" value="google sign in" />
     </div>
     <div id="det" class="modal-detail hide">
         <b>Result:</b>
         <div id="result">
 
         </div>
-        
-        <b>Details:</b>    
-        
+
+        <b>Details:</b>
+
         <div id="detail">
 
         </div>
