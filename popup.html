@@ -24,7 +24,7 @@
         html,
         body {
             font-family: 'Helvetica'
-            font-size: 14px;
+                font-size: 14px;
             margin: 0;
             min-height: 180px;
             padding: 0;
@@ -33,7 +33,7 @@
 
         h1 {
             font-family: 'Helvetica'
-            font-size: 22px;
+                font-size: 22px;
             font-weight: 400;
             margin: 0;
             color: #2f5876;
@@ -78,6 +78,10 @@
             display: block;
         }
 
+        .modal-detail b {
+            font-size: medium;
+        }
+
         .logo {
             border: 1px solid black;
             padding: 16px;
@@ -88,6 +92,7 @@
         .logo-icon {
             vertical-align: text-bottom;
             margin-right: 12px;
+            cursor: pointer;
         }
 
         .version {
@@ -109,20 +114,28 @@
         .flex {
             opacity: 1;
             transition: opacity 0.2s ease-in-out;
-           
+
         }
 
         img:hover {
             opacity: 1;
         }
 
-        .fade{
+        .fade {
             opacity: 0.4;
         }
 
         .flex .fa {
             font-size: 40px;
             color: #2f5876;
+        }
+
+        .true {
+            color: green;
+        }
+
+        .false {
+            color: red;
         }
     </style>
     <script src="jquery.min.js"></script>
@@ -141,11 +154,11 @@
     </div>
     <div class="modal-icons">
         <div class="flex-container">
-            
-                <div id="checkPage" class="hide">
-                    <div class="flex">
+
+            <div id="checkPage" class="hide">
+                <div class="flex">
                     &nbsp;&nbsp;
-                    <img id="detect" title="Detect"  class="logo-icon" src="detectbutton.jpeg" />
+                    <img id="detect" title="Detect" class="logo-icon" src="detectbutton.jpeg" />
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -153,20 +166,21 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;
                     <img id="agree" title="Agree" class="logo-icon hide fade" src="greenflag.png" />
-                    
+
                     <img id="disagree" title="Disagree" class="logo-icon hide fade" src="redflag.png" />
                     <input type="hidden" id="docId">
-                    </div>
                 </div>
+            </div>
 
         </div>
-        <input id="signin" type="image" src="googlebutton.jpg" height="30" style="padding-left: 15px; padding-bottom: 15px;" />
+        <input id="signin" type="image" src="googlebutton.jpg" height="30"
+            style="padding-left: 15px; padding-bottom: 15px;" />
     </div>
-        
+
     <div id="det" class="modal-detail hide">
         <b>Result:</b>
         <br>
-        
+
         <div id="result">
 
         </div>

@@ -52,8 +52,8 @@ function initFirebaseAuth() {
 
 function saveAction(messageText, action) {
     // Add a new message entry to the database.
-    if ($('#docId').value()) {
-        return firebase.firestore().collection('messages').doc(docId).update({
+    if ($('#docId').val()) {
+        return firebase.firestore().collection('messages').doc($('#docId').val()).update({
             name: getUserName(),
             email: getEmailId(),
             url: messageText,
@@ -92,14 +92,14 @@ function loadMessages(email, url) {
                 // doc.data() is never undefined for query doc snapshots
                 //console.log(doc.id, " => ", doc.data());
                 if (doc.data()) {
-                    $('#docId').value = doc.id;
+                    $('#docId').val(doc.id);
                     if (doc.data().action == "agree")
                         $('#agree').removeClass('fade');
                     else if (doc.data().action == "disagree")
                         $('#disagree').removeClass('fade');
                 }
                 else {
-                    $('#docId').value = null;
+                    $('#docId').val(null);
                 }
                 alert(doc.data("action"));
             });
@@ -142,15 +142,15 @@ function extractInfo(htmlDoc) {
     //detailDiv.innerText=firstText.replace(/(\n)/gm," ");
     detailDiv.innerText = firstText.split('\n\n', 5).join('\n\n');
 
-    //alert (firstText.split('\n\n', 5).join('\n\n'));
-    //var firstIndex = htmlDoc.indexOf("h3");
-    //alert(firstIndex);
-    //alert(htmlDoc.length);
-    //var x = htmlDoc.substring(1050,40);
-    //var x = htmlDoc.substring(parseInt(firstIndex) , firstIndex+40);
-    //x="HTML".substring(1, 2);
-    //alert(x);
     $('#det').removeClass('hide');
+    if(result.indexOf("True")>-1)
+    {
+        $('#det b').addClass('true');
+    }
+    else
+    {
+        $('#det b').addClass('false');
+    }
 
 
 
@@ -202,7 +202,8 @@ document.addEventListener('DOMContentLoaded', function () {
             //d = document;
             var link = tab.url;
             saveAction(link, "agree");
-
+            $('#agree').removeClass('fade');
+                $('#disagree').addClass('fade');
         });
     }, false);
 
@@ -213,7 +214,8 @@ document.addEventListener('DOMContentLoaded', function () {
             var link = tab.url;
 
             saveAction(link, "disagree");
-
+            $('#disagree').removeClass('fade');
+            $('#agree').addClass('fade');
         });
     }, false);
 
