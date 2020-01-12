@@ -70,9 +70,13 @@ function saveAction(messageText, action) {
             url: messageText,
             action: action,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(function(){
+            loadMessages(getEmailId(), messageText);
         }).catch(function (error) {
             console.error('Error writing new message to database', error);
         });
+
+        
     }
 
 
@@ -193,7 +197,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 loadMessages(getEmailId(), link)
 
             })
+
+
+
         });
+
+        $.post({
+
+
+            url: "https://automl.googleapis.com/v1beta1/projects/fakenewsdetector/locations/us-central1/models/TBL8780484355140091904:predict",
+            headers: {
+              "Authorization": "Bearer ya29.c.Kl65Bx16NdX5glon-K5eG93_kvY7DInJ3jsuCf8dF5kA6vqT4Ydh-UihnTXdYk3S4ZheGB8rDe3N_6Gz1Ozg4-itctVIqt7jhvmnuiXV2q_wOXM3iUuTRGdXd9r5TLTY",
+              "Content-Type": "application/json"
+            },
+            //data: JSON.parse("{\"payload\": {\"row\": {\"values\": [\"This is a sentence. This is real.\"]}}}")
+            data: '{"payload": {"row": {"values": ["This is a sentence. This is real."]}}}',
+          }).then(function(res){
+            alert(res);
+          }, function(err){
+            alert(err);
+          });
+
+
     }, false);
 
     agreeButton.addEventListener('click', function () {
